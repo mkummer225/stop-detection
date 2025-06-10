@@ -19,3 +19,18 @@ pip install "fastapi[standard]" uvicorn inference_sdk
 cd backend
 fastapi dev
 ```
+
+
+## Frontend
+ReactJS, located in the `./frontend` folder
+
+### Setup
+```shell
+cd frontend
+npm i
+```
+
+### Run
+```shell
+npm run dev
+```
