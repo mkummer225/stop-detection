@@ -1,5 +1,7 @@
 from fastapi import FastAPI, Form, UploadFile
 from fastapi.responses import StreamingResponse
+from fastapi.middleware.cors import CORSMiddleware
+
 from inference_sdk import InferenceHTTPClient
 import os
 from datetime import datetime
@@ -10,7 +12,20 @@ PROCESS_FPS = 5 # number of frames to process every second
 # Create temp_footage directory if it doesn't exist
 os.makedirs("temp_footage", exist_ok=True)
 
+origins = [
+    "http://localhost",
+    "http://localhost:5173",
+]
+
 app = FastAPI(debug=True)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Initialize the InferenceHTTPClient
 client = InferenceHTTPClient(api_url="https://serverless.roboflow.com",
@@ -28,6 +43,8 @@ async def inference(video: UploadFile = Form(...), fps: float = Form(...)):
     temp_file_path = os.path.join("temp_footage", filename)
 
     try:
+        print(f"Reading video contents: {video.filename}")
+
         contents = await video.read()
         
         # Save the video file
@@ -36,47 +53,54 @@ async def inference(video: UploadFile = Form(...), fps: float = Form(...)):
 
         cap = cv2.VideoCapture(temp_file_path)
 
-        def stream_frames():
-            # Track the current frame position
-            current_frame = 0
+        resultsArray = []
 
-            # House a buffer of frames of size (fps/PROCESS_FPS) that get's processed for
-            # every 1 second of video time
-            frame_buffer = []
+        # def stream_frames():
+        # Track the current frame position
+        current_frame = 0
 
-            while cap.isOpened():
-                ret, frame = cap.read()
-                
-                if not ret:
-                    break
-    
-                # Build up our buffer and bulk process once per second of video time
-                if (current_frame % (fps/PROCESS_FPS) == 0):
-                    print(f"Add frame to buffer: #{current_frame}")
-                    # _, buffer = cv2.imencode('.jpg', frame)
-                    frame_buffer.append(frame)
+        # House a buffer of frames of size (fps/PROCESS_FPS) that get's processed for
+        # every 1 second of video time
+        frame_buffer = []
+        frames_per_batch = int(fps / PROCESS_FPS)
 
-                    if len(frame_buffer) == (fps/PROCESS_FPS):
-                        print(f"Process buffer")
+        print(f"Stream-processing frames...")
+        while cap.isOpened():
+            ret, frame = cap.read()
+            
+            if not ret:
+                break
 
-                        # Process this batch of images then perform our analysis whether
-                        # or not the vehicle(s) stopped
-                        # client.infer(...)
+            # Build up our buffer and bulk process once per second of video time
+            if (current_frame % (frames_per_batch) == 0):
+                print(f"Add frame to buffer: #{current_frame}")
+                # _, buffer = cv2.imencode('.jpg', frame)
+                frame_buffer.append(frame)
 
-                        # classes will be 'stop' and 'no-stop'
-                        yield { "result": "stop", "metadata": { "startFrame": current_frame - len(frame_buffer) }}
+                if len(frame_buffer) == (frames_per_batch):
+                    print(f"Process buffer")
 
-                        # Reset buffer...
-                        frame_buffer = []
-                
-                current_frame += 1
-                
-            cap.release()
+                    # Process this batch of images then perform our analysis whether
+                    # or not the vehicle(s) stopped
+                    # client.infer(...)
+                    resultsArray.append(current_frame)
 
-            # Clean up the temporary file
-            os.unlink(temp_file_path)
+                    # classes will be 'stop' and 'no-stop'
+                    # yield f"1234\n"
+                    # yield { "result": "stop", "metadata": { "startFrame": current_frame - len(frame_buffer) }}
 
-        return StreamingResponse(stream_frames(), media_type="multipart/x-mixed-replace;boundary=frame")
+                    # Reset buffer...
+                    frame_buffer = []
+            
+            current_frame += 1
+            
+        cap.release()
+
+        # Clean up the temporary file
+        os.unlink(temp_file_path)
+
+        return { "result": resultsArray }
+        # return StreamingResponse(stream_frames(), media_type="multipart/x-mixed-replace;boundary=frame")
     except Exception as e:
         # Clean up the temporary file
         os.unlink(temp_file_path)
