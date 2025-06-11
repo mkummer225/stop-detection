@@ -6,7 +6,7 @@ interface HeaderProps {
 
 export default function Header({ handleUploadButton }: HeaderProps) {
     return (
-        <div className="fixed top-0 left-0 right-0 bg-white p-4 flex justify-between items-center">
+        <div className="fixed z-50 top-0 left-0 right-0 bg-white p-4 flex justify-between items-center">
             <h1 className="text-indigo-500 font-semibold text-sm">unhappy-camper.co</h1>
 
             <div className="flex-1 text-right">
