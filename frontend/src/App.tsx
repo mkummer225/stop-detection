@@ -2,6 +2,7 @@ import { useCallback, useMemo, useRef, useState } from 'react'
 import './App.css'
 import Header from './components/header'
 import VideoPreview from './components/video-preview'
+import DetectionRow from './components/detection-row'
 
 function App() {
   // Main file input reference:
@@ -71,6 +72,13 @@ function App() {
         </div>
 
         {/* Process Results... */}
+        <div className="mt-20 pt-4 max-w-4xl mx-auto">
+          <h2 className="border-b font-semibold pb-2 mb-4 text-xs uppercase text-zinc-500 border-zinc-300">Results</h2>
+          
+          <div className="flex flex-col gap-4">
+            {[...Array(5).keys()].map((n) => <DetectionRow n={n} />)}
+          </div>
+        </div>
       </div>
     </>
   )
