@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import './App.css'
 import Header from './components/header'
 import VideoPreview from './components/video-preview'
@@ -17,10 +17,13 @@ function App() {
     if(!fileInputRef.current) 
       return
 
-    setSelectedFile(null)
     fileInputRef.current?.click()
     return true
   }
+
+  useEffect(() => {
+    setPredictionResults([])
+  }, [selectedFile])
 
   const processFootage = useCallback(() => {
     if(!fileInputRef.current?.files)
@@ -60,28 +63,28 @@ function App() {
       <Header handleUploadButton={handleUploadButton} />
 
       <div className="relative mt-16 p-4">
-        <VideoPreview src={videoObjectURL} isProcessing={isProcessing} />
+        <VideoPreview src={videoObjectURL} isProcessing={isProcessing} detections={predictionResults} handleUploadButton={handleUploadButton} />
         <input ref={fileInputRef} type="file" accept="video/*" className="absolute invisible -z-10" onChange={() => {
           if(!fileInputRef.current?.files) return
           setSelectedFile(fileInputRef.current.files[0])
         }} />
 
         {/* Controls Area */}
-        <div className="mt-8 flex gap-4 justify-center items-center">
+        {videoObjectURL && <div className="mt-8 flex gap-4 justify-center items-center">
           <button className='text-sm bg-zinc-100 border border-zinc-200 transition-colors hover:bg-zinc-200 cursor-pointer select-none px-2.5 py-1 rounded-lg' onClick={processFootage}>Process</button>
           <button className='text-sm bg-zinc-100 border border-zinc-200 transition-colors hover:bg-zinc-200 cursor-pointer select-none px-2.5 py-1 rounded-lg' onClick={() => {
             if(!fileInputRef.current) return
             fileInputRef.current.value = ""
             setSelectedFile(null)
           }}>Reset</button>
-        </div>
+        </div>}
 
         {/* Process Results... */}
-        {predictionResults && predictionResults.length > 0 && <div className="mt-20 pt-4 max-w-4xl mx-auto">
+        {predictionResults && predictionResults.vehicles && <div className="mt-20 pt-4 max-w-4xl mx-auto">
           <h2 className="border-b font-semibold pb-2 mb-4 text-xs uppercase text-zinc-500 border-zinc-300">Results</h2>
           
           <div className="flex flex-col gap-4">
-            {predictionResults.filter(({ predictions }) => predictions?.length > 0).map((pred, i) => <DetectionRow prediction={pred} key={i} />)}
+            {predictionResults.vehicles.map((pred, i) => <DetectionRow prediction={pred} key={i} />)}
           </div>
         </div>}
       </div>
