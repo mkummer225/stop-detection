@@ -28,7 +28,8 @@ app.add_middleware(
 )
 
 # Initialize the InferenceHTTPClient
-client = InferenceHTTPClient(api_url="https://serverless.roboflow.com",
+# client = InferenceHTTPClient(api_url="https://serverless.roboflow.com",
+client = InferenceHTTPClient(api_url="http://localhost:9001",
                              api_key="xvBNtZrVRoYKrwQcUakx")
 
 
@@ -64,7 +65,7 @@ async def inference(video: UploadFile = Form(...), fps: float = Form(...)):
         frame_buffer = []
         frames_per_batch = int(fps / PROCESS_FPS)
 
-        print(f"Stream-processing frames...")
+        print(f"Processing frames...")
         while cap.isOpened():
             ret, frame = cap.read()
             
@@ -77,23 +78,33 @@ async def inference(video: UploadFile = Form(...), fps: float = Form(...)):
                 # _, buffer = cv2.imencode('.jpg', frame)
                 frame_buffer.append(frame)
 
-                if len(frame_buffer) == (frames_per_batch):
-                    print(f"Process buffer")
+                # if len(frame_buffer) >= 100:
+                #     print(f"Process buffer")
 
-                    # Process this batch of images then perform our analysis whether
-                    # or not the vehicle(s) stopped
-                    # client.infer(...)
-                    resultsArray.append(current_frame)
+                #     # Process this batch of images then perform our analysis whether
+                #     # or not the vehicle(s) stopped
+                #     results = client.infer(frame_buffer, model_id="wheels-detection-fgbtv/1")
+                #     print(results)
+                #     resultsArray.append([{"frame": i, "predictions": res["predictions"]} for i, res in enumerate(results)])
 
-                    # classes will be 'stop' and 'no-stop'
-                    # yield f"1234\n"
-                    # yield { "result": "stop", "metadata": { "startFrame": current_frame - len(frame_buffer) }}
-
-                    # Reset buffer...
-                    frame_buffer = []
+                #     # Reset buffer...
+                #     frame_buffer = []
             
             current_frame += 1
-            
+        
+        # Process all results at once for now (let RoboFlow handle the queue and getting us our results)
+        if len(frame_buffer) > 0:
+            print(f"Flush remaining buffer")
+
+            # Process this batch of images then perform our analysis whether
+            # or not the vehicle(s) stopped
+            results = client.infer(frame_buffer, model_id="wheels-detection-fgbtv/1")
+            print(results)
+            resultsArray = [{"frame": (i * frames_per_batch), "predictions": res["predictions"]} for i, res in enumerate(results)]
+
+            # Reset buffer...
+            frame_buffer = []
+
         cap.release()
 
         # Clean up the temporary file
