@@ -1,12 +1,12 @@
 
 interface DetectionRowProps {
-    n: number
+    prediction: any
 }
 
-export default function DetectionRow({ n }: DetectionRowProps) {
+export default function DetectionRow({ prediction }: DetectionRowProps) {
     return (
         <div className="bg-zinc-100 border border-zinc-300 p-4 rounded-lg">
-            Detection {n}
+            {JSON.stringify(prediction)}
         </div>
     )
 }

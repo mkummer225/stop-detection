@@ -10,6 +10,8 @@ function App() {
 
   const [isProcessing, setIsProcessing] = useState<boolean>(false)
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  
+  const [predictionResults, setPredictionResults] = useState<any>([])
 
   const handleUploadButton = () => {
     if(!fileInputRef.current) 
@@ -32,13 +34,16 @@ function App() {
     fd.set("fps", 30)
 
     setIsProcessing(true)
+    setPredictionResults([])
 
     fetch("http://localhost:8000/api/get_violators", {
       method: "POST",
       body: fd
     }).then(async res => {
-      console.log(await res.json())
+      const predictionsArr = await res.json()
+
       setIsProcessing(false)
+      setPredictionResults(predictionsArr.result)
     }).catch(e => {
       console.log(e)
       setIsProcessing(false)
@@ -72,13 +77,13 @@ function App() {
         </div>
 
         {/* Process Results... */}
-        <div className="mt-20 pt-4 max-w-4xl mx-auto">
+        {predictionResults && predictionResults.length > 0 && <div className="mt-20 pt-4 max-w-4xl mx-auto">
           <h2 className="border-b font-semibold pb-2 mb-4 text-xs uppercase text-zinc-500 border-zinc-300">Results</h2>
           
           <div className="flex flex-col gap-4">
-            {[...Array(5).keys()].map((n) => <DetectionRow n={n} />)}
+            {predictionResults.filter(({ predictions }) => predictions?.length > 0).map((pred, i) => <DetectionRow prediction={pred} key={i} />)}
           </div>
-        </div>
+        </div>}
       </div>
     </>
   )
