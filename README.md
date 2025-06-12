@@ -46,7 +46,7 @@ npm run dev
 
 ## Brief Tour
 
-{add video here}
+https://github.com/user-attachments/assets/10a16304-7aae-4510-8a0c-a586f8f08775
 
 ## Tools & Models
 
