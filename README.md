@@ -15,13 +15,15 @@ Python with FastAPI, located in the `./backend` folder
 ### Setup
 
 ```shell
-pip install "fastapi[standard]" uvicorn inference_sdk opencv-python
+cd backend
+conda create -n unhappy-campers
+conda activate unhappy-campers
+pip install "fastapi[standard]" uvicorn inference_sdk supervision opencv-python
 ```
 
 ### Run
 
 ```shell
-cd backend
 fastapi dev
 ```
 
@@ -31,9 +33,11 @@ ReactJS, located in the `./frontend` folder
 
 ### Setup
 
+In a separate terminal...
+
 ```shell
 cd frontend
-npm i
+npm install
 ```
 
 ### Run
@@ -41,6 +45,20 @@ npm i
 ```shell
 npm run dev
 ```
+
+### Usage
+
+Use the **Upload Footage** button at the upper right corner OR click the **upload** button in the video preview area then choose your video file.
+
+After the video appears, click the **Process** button to call the backend inference API endpoint.
+
+On my M1 Macbook Pro (16gb) the server is able to process at just about real time (a 5 min. video typically takes about 5 minutes to process).
+
+You can use the play button to start the video or click anywhere on the timeline (including on detections) to jump to a point in the video.
+
+RED signifies stop sign violators and BLUE signifies vehicles that stopped appropriatley
+
+The **Reset** button will clear your video and results
 
 ---
 
