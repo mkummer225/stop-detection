@@ -50,13 +50,15 @@ npm run dev
 
 Use the **Upload Footage** button at the upper right corner OR click the **upload** button in the video preview area then choose your video file.
 
+[📹 5 Minute Sample Video](https://drive.google.com/file/d/1fBfy1sYsoifJxRmHl52urRcpY5lhbH58/view?usp=sharing)
+
 After the video appears, click the **Process** button to call the backend inference API endpoint.
 
 On my M1 Macbook Pro (16gb) the server is able to process at just about real time (a 5 min. video typically takes about 5 minutes to process).
 
 You can use the play button to start the video or click anywhere on the timeline (including on detections) to jump to a point in the video.
 
-RED signifies stop sign violators and BLUE signifies vehicles that stopped appropriatley
+RED signifies stop sign violators and BLUE signifies vehicles that stopped appropriately
 
 The **Reset** button will clear your video and results
 
