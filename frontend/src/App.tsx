@@ -62,31 +62,34 @@ function App() {
     <>
       <Header handleUploadButton={handleUploadButton} />
 
-      <div className="relative mt-16 p-4">
-        <VideoPreview src={videoObjectURL} isProcessing={isProcessing} detections={predictionResults} handleUploadButton={handleUploadButton} />
-        <input ref={fileInputRef} type="file" accept="video/*" className="absolute invisible -z-10" onChange={() => {
-          if(!fileInputRef.current?.files) return
-          setSelectedFile(fileInputRef.current.files[0])
-        }} />
-
-        {/* Controls Area */}
-        {videoObjectURL && <div className="mt-8 flex gap-4 justify-center items-center">
-          <button className='text-sm bg-zinc-100 border border-zinc-200 transition-colors hover:bg-zinc-200 cursor-pointer select-none px-2.5 py-1 rounded-lg' onClick={processFootage}>Process</button>
-          <button className='text-sm bg-zinc-100 border border-zinc-200 transition-colors hover:bg-zinc-200 cursor-pointer select-none px-2.5 py-1 rounded-lg' onClick={() => {
-            if(!fileInputRef.current) return
-            fileInputRef.current.value = ""
-            setSelectedFile(null)
-          }}>Reset</button>
-        </div>}
-
-        {/* Process Results... */}
-        {predictionResults && predictionResults.vehicles && <div className="mt-20 pt-4 max-w-4xl mx-auto">
-          <h2 className="border-b font-semibold pb-2 mb-4 text-xs uppercase text-zinc-500 border-zinc-300">Results</h2>
-          
-          <div className="flex flex-col gap-4">
-            {predictionResults.vehicles.map((pred, i) => <DetectionRow prediction={pred} key={i} />)}
-          </div>
-        </div>}
+      <div className="mt-16 p-4">
+        <div className="max-w-xl mx-auto text-center text-sm text-zinc-500 mb-8">
+          <p>An app to help you quantify the number of stop sign violators in your area.</p>
+        </div>
+        <div className="relative">
+          <VideoPreview src={videoObjectURL} isProcessing={isProcessing} detections={predictionResults} handleUploadButton={handleUploadButton} />
+          <input ref={fileInputRef} type="file" accept="video/*" className="absolute invisible -z-10" onChange={() => {
+            if(!fileInputRef.current?.files) return
+            setSelectedFile(fileInputRef.current.files[0])
+          }} />
+          {/* Controls Area */}
+          {videoObjectURL && <div className="mt-8 flex gap-4 justify-center items-center">
+            <button className='text-sm bg-zinc-100 border border-zinc-200 transition-colors hover:bg-zinc-200 cursor-pointer select-none px-2.5 py-1 rounded-lg' onClick={processFootage}>Process</button>
+            <button className='text-sm bg-zinc-100 border border-zinc-200 transition-colors hover:bg-zinc-200 cursor-pointer select-none px-2.5 py-1 rounded-lg' onClick={() => {
+              if(!fileInputRef.current) return
+              fileInputRef.current.value = ""
+              setSelectedFile(null)
+            }}>Reset</button>
+          </div>}
+          {/* Process Results... */}
+          {predictionResults && predictionResults.vehicles && <div className="mt-20 pt-4 max-w-4xl mx-auto">
+            <h2 className="border-b font-semibold pb-2 mb-4 text-xs uppercase text-zinc-500 border-zinc-300">Results</h2>
+        
+            <div className="flex flex-col gap-4">
+              {predictionResults.vehicles.map((pred, i) => <DetectionRow prediction={pred} key={i} />)}
+            </div>
+          </div>}
+        </div>
       </div>
     </>
   )

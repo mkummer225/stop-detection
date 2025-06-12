@@ -7,7 +7,7 @@ interface HeaderProps {
 export default function Header({ handleUploadButton }: HeaderProps) {
     return (
         <div className="fixed z-50 top-0 left-0 right-0 bg-white p-4 flex justify-between items-center">
-            <h1 className="text-indigo-500 font-semibold text-sm">unhappy-camper.co</h1>
+            <h1 className="text-red-500 text-shadow-red-200/30 text-lg text-shadow-md font-semibold"><span className="inline-block italic mr-px text-xs">un-</span>Happy Camper<span className="inline-block font-normal text-xs ml-0.5"></span></h1>
 
             <div className="flex-1 text-right">
                 <button onClick={handleUploadButton} className="inline-flex items-center text-xs uppercase bg-zinc-800 text-white hover:bg-zinc-700 transition-all hover:-translate-y-0.5 cursor-pointer p-4 rounded-lg px-5 py-2">
