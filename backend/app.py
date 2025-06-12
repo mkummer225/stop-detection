@@ -1,3 +1,6 @@
+from dotenv import load_dotenv
+load_dotenv()
+
 from fastapi import FastAPI, Form, UploadFile
 from fastapi.responses import StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -46,7 +49,7 @@ inference_config = InferenceConfiguration(confidence_threshold=0.05)
 
 # Initialize the InferenceHTTPClient
 client = InferenceHTTPClient(api_url="http://localhost:9001",
-                             api_key="xvBNtZrVRoYKrwQcUakx")
+                             api_key=os.environ["ROBOFLOW_API_KEY"])
 
 # Initialize tracker
 tracker = sv.ByteTrack(frame_rate=FPS/PROCESS_EVERY_N)
