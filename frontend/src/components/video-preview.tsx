@@ -83,6 +83,7 @@ export default function VideoPreview({ src, isProcessing, detections, handleUplo
 
     return (<>
         <div className={"relative max-w-lg mx-auto bg-zinc-200 rounded-lg overflow-hidden" + (src ? '' : ' animate-pulse')}>
+            {/* Display the video + the bounding boxes of cars + wheels */}
             {src && <>
                 <video ref={videoElmRef} onLoadedMetadata={handleMetadataLoaded} onTimeUpdate={() => setCurTime(videoElmRef.current?.currentTime)} src={src} className="w-full h-auto aspect-[16/9]" controls></video>
                 {isProcessing && <div className="absolute inset-0 bg-black/70 text-sm flex items-center justify-center text-white">
@@ -97,6 +98,8 @@ export default function VideoPreview({ src, isProcessing, detections, handleUplo
                 }}></div>)}
             </>
             }
+
+            {/* Status text */}
             {!src && <div className=" select-none cursor-pointer w-full h-auto aspect-[16/9] flex items-center justify-center text-xs font-semibold" onClick={handleUploadButton}>
                 {isProcessing ? <h2>'Processing with RoboFlow...'</h2> : <div className="text-center">
                     <h2 className="mb-2">No Video</h2>
@@ -105,14 +108,17 @@ export default function VideoPreview({ src, isProcessing, detections, handleUplo
             </div>}
         </div>
 
-        {/* Allow the User to Visualize the results */}
+        {/* Visualize the results on a timeline */}
         {src && <div ref={stoppageBlocksRef} className="relative w-full max-w-md bg-zinc-200 rounded-lg h-14 mx-auto mt-8 overflow-hidden"
             onMouseUp={setPlayHead}>
+            {/* Add blocks to the scrubber showing where drivers stopped (blue) and did not stop (red) */}
             {stoppageBlocks?.map((detection: StoppageBlock)=>
-                <div className={"absolute top-0 bottom-0 opacity-40 hover:opacity-80 transition-all rounded-lg" + (detection.didStop ? " border-blue-500 bg-blue-500" : " border-red-500 bg-red-500")}
-                     style={{ left: `${stoppageWidthRatio * detection.startFrame}px`, width: `${stoppageWidthRatio * (detection.endFrame - detection.startFrame)}px` }}
+                <div className={"absolute top-0 bottom-0 select-none cursor-pointer opacity-40 hover:opacity-80 transition-all rounded-lg" + (detection.didStop ? " border-blue-500 bg-blue-500" : " border-red-500 bg-red-500")}
+                     style={{ left: `${stoppageWidthRatio * detection.startFrame}px`, width: `${Math.max(2, stoppageWidthRatio * (detection.endFrame - detection.startFrame))}px` }}
                      onClick={() => setCurrentFrame(detection.startFrame)}
-                >&nbsp;</div>
+                >
+
+                </div>
             )}
             <div className="absolute top-0 bottom-0 border-r-black border-r-2" style={{ left: `${stoppageWidthRatio * (curTime*FPS)}px` }}></div>
         </div>}

@@ -17,8 +17,8 @@ export default function DetectionRow({ prediction }: DetectionRowProps) {
             <div className="flex items-baseline text-sm">
                 <span className="inline-block mr-1 uppercase text-xs text-zinc-400 w-16">End:</span>{ prediction.end_frame }
             </div>
-            
-            {/* TODO: allow user to click to go to detection... */}
+
+            {/* TODO: allow user to click to jump to a detection in the video... */}
             {/* <button className="text-zinc-400 underline text-xs hover:text-zinc-600 cursor-pointer" onClick={setCurrentFrame(prediction.start_frame)}>view</button> */}
         </div>
     )
