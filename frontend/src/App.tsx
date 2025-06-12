@@ -94,6 +94,7 @@ function App() {
           }} />
 
           {/* Controls */}
+          {/* TODO: ability to input polygon stop zones from RoboFlow's tool */}
           {videoObjectURL && <div className="mt-8 flex gap-4 justify-center items-center">
             <button className='text-sm bg-zinc-100 border border-zinc-200 transition-colors hover:bg-zinc-200 cursor-pointer select-none px-2.5 py-1 rounded-lg' onClick={processFootage}>Process</button>
             <button className='text-sm bg-zinc-100 border border-zinc-200 transition-colors hover:bg-zinc-200 cursor-pointer select-none px-2.5 py-1 rounded-lg' onClick={() => {
@@ -109,7 +110,7 @@ function App() {
         
             {curRatio !== null && <div className="mb-8">
               <div className="text-xl font-semibold text-center mb-4">
-                { 100*curRatio[0]/(curRatio[0] + curRatio[1]) }% stop
+                <span className="inline-block mr-2.5">{ curRatio[0]/(curRatio[0] + curRatio[1]) >= 0.8 ? '👍' : '👎'}</span>{ 100*curRatio[0]/(curRatio[0] + curRatio[1]) }% stop
               </div>
               <h2 className="font-semibold text-sm text-center mb-2">Stop Sign Obeyers to Violators</h2>
               { <div className="h-12 flex rounded-lg overflow-hidden max-w-lg mx-auto select-none"><div className="inline-flex items-center justify-center text-white bg-blue-500" style={{width: `${100*curRatio[0]/(curRatio[0] + curRatio[1])}%`}}>{ curRatio[0] }</div><div className="inline-flex items-center justify-center text-white bg-red-500" style={{width: `${100*curRatio[1]/(curRatio[0] + curRatio[1])}%`}}>{ curRatio[1] }</div></div> }

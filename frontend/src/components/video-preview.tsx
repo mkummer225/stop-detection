@@ -43,8 +43,8 @@ export default function VideoPreview({ src, isProcessing, detections, handleUplo
         for(let i = 0; i < detections?.vehicles?.length; i++) {
             detectedFrames.push({
                 didStop: detections?.vehicles[i].stopped,
-                startFrame: detections?.vehicles[i].end_frame,
-                endFrame: detections?.vehicles[i].start_frame
+                startFrame: detections?.vehicles[i].start_frame,
+                endFrame: detections?.vehicles[i].end_frame
             })
         }
 
@@ -84,6 +84,7 @@ export default function VideoPreview({ src, isProcessing, detections, handleUplo
     return (<>
         <div className={"relative max-w-lg mx-auto bg-zinc-200 rounded-lg overflow-hidden" + (src ? '' : ' animate-pulse')}>
             {/* Display the video + the bounding boxes of cars + wheels */}
+            {/* TODO: hide video controls (move to custom controls with scrubber) */}
             {src && <>
                 <video ref={videoElmRef} onLoadedMetadata={handleMetadataLoaded} onTimeUpdate={() => setCurTime(videoElmRef.current?.currentTime)} src={src} className="w-full h-auto aspect-[16/9]" controls></video>
                 {isProcessing && <div className="absolute inset-0 bg-black/70 text-sm flex items-center justify-center text-white">
@@ -109,6 +110,8 @@ export default function VideoPreview({ src, isProcessing, detections, handleUplo
         </div>
 
         {/* Visualize the results on a timeline */}
+        {/* TODO: add play pause & video controls */}
+        {/* TODO: allow dragging / scrubbing */}
         {src && <div ref={stoppageBlocksRef} className="relative w-full max-w-md bg-zinc-200 rounded-lg h-14 mx-auto mt-8 overflow-hidden"
             onMouseUp={setPlayHead}>
             {/* Add blocks to the scrubber showing where drivers stopped (blue) and did not stop (red) */}
