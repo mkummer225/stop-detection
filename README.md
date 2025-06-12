@@ -84,13 +84,13 @@ The frontend is a simple React application and our backend uses FastAPI in conju
 
 Building this required some architectural tradeoffs – processing video can be computationally taxing, I worked to balance accuracy with the user's experience (latency and time to process footage).
 
-I experimented early with lots of RoboFlow products and models and landed on an approach that first (v0) re-used a wheel detection model someone else had built. This would allow me to start building right away without having to worry about annotating and building a fine tuned model.
+I experimented early with lots of RoboFlow products and models and landed on an approach that first (v0) re-used a [wheel detection model someone else had built](https://universe.roboflow.com/workworkwork-an7aa/wheels-detection-fgbtv). This allowed me to start building right away without having to worry about annotating and building a fine tuned model.
 
 It worked okay – detecting wheels primarily at the bottom of the scene (where they were bigger and better matched the model's original dataset) – and allowed me to build an algorithm that calculated wheel speed and dwell time in our stop zone (S-T-O-P as my partner always reminds me...).
 
 This worked well enough to get the UI to ~75% while letting me make good progress testing out my API endpoint; dialing in it's response, trying out different processing frame rates, determining dwell time and wheel speeds we'd consider 'stopped', etc.
 
-The algorithm was promising but the model was missing the smaller wheels in the scene so it was time to upload some frames (~80), annotate them up, and train our own model.
+The algorithm was promising but the model was missing the smaller wheels in the scene so it was time to upload some frames (~80), annotate them up, and train [my own model](https://universe.roboflow.com/trial-5gole/wheel-detection-0mkax).
 
 During the process of training my own model (v1), I tried several of the models RoboFlow offers –  starting with RF-DETR, then RoboFlow Instant, and finally settling on RoboFlow 3.0 Object Detection (Fast).
 
