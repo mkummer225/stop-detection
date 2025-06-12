@@ -86,6 +86,9 @@ async def inference(video: UploadFile = Form(...), fps: float = Form(...)):
 
         # Store all tracking data
         vehicle_tracks = {}
+        
+        # Track when vehicles are first seen and last seen
+        vehicle_lifecycle = {}
 
         print(f"Processing frames...")
         while cap.isOpened():
@@ -173,6 +176,16 @@ async def inference(video: UploadFile = Form(...), fps: float = Form(...)):
                             'center': car_center,
                             'confidence': confidence
                         }
+                        
+                        # Track vehicle lifecycle - when they enter and exit the scene
+                        current_frame_number = frame_idx * PROCESS_EVERY_N
+                        if track_id not in vehicle_lifecycle:
+                            vehicle_lifecycle[track_id] = {
+                                'first_seen': current_frame_number,
+                                'last_seen': current_frame_number
+                            }
+                        else:
+                            vehicle_lifecycle[track_id]['last_seen'] = current_frame_number
 
                 # Now process wheels and associate them with tracked cars
                 if len(wheel_detections) > 0:
@@ -215,8 +228,8 @@ async def inference(video: UploadFile = Form(...), fps: float = Form(...)):
                                         'frame_indices': [],
                                         'confidences': [],
                                         'stopped': False,
-                                        'start_frame': frame_idx * PROCESS_EVERY_N,
-                                        'end_frame': frame_idx * PROCESS_EVERY_N
+                                        'stopzone_start_frame': frame_idx * PROCESS_EVERY_N,
+                                        'stopzone_end_frame': frame_idx * PROCESS_EVERY_N
                                     }
 
                                 # Add wheel position (for stopzone analysis) and car position (for reference)
@@ -224,7 +237,7 @@ async def inference(video: UploadFile = Form(...), fps: float = Form(...)):
                                 vehicle_tracks[closest_car_id]['car_positions'].append(tracked_cars[closest_car_id]['center'])
                                 vehicle_tracks[closest_car_id]['frame_indices'].append(frame_idx)
                                 vehicle_tracks[closest_car_id]['confidences'].append(tracked_cars[closest_car_id]['confidence'])
-                                vehicle_tracks[closest_car_id]['end_frame'] = frame_idx * PROCESS_EVERY_N
+                                vehicle_tracks[closest_car_id]['stopzone_end_frame'] = frame_idx * PROCESS_EVERY_N
 
             # Analyze each vehicle track using WHEEL positions to determine if they stopped
             for track_id, track_data in vehicle_tracks.items():
@@ -270,11 +283,17 @@ async def inference(video: UploadFile = Form(...), fps: float = Form(...)):
             # Prepare vehicle tracking results
             vehicle_results = []
             for track_id, track_data in vehicle_tracks.items():
+                # Use lifecycle data for start/end frames, fallback to stopzone data if not available
+                start_frame = vehicle_lifecycle.get(track_id, {}).get('first_seen', track_data.get('stopzone_start_frame', 0))
+                end_frame = vehicle_lifecycle.get(track_id, {}).get('last_seen', track_data.get('stopzone_end_frame', 0))
+                
                 vehicle_results.append({
                     "track_id": int(track_id),
                     "stopped": track_data["stopped"],
-                    "start_frame": track_data["start_frame"],
-                    "end_frame": track_data["end_frame"],
+                    "start_frame": start_frame,  # When vehicle first entered the scene
+                    "end_frame": end_frame,      # When vehicle last seen in the scene
+                    "stopzone_start_frame": track_data.get("stopzone_start_frame", None),  # When first detected in stopzone
+                    "stopzone_end_frame": track_data.get("stopzone_end_frame", None),      # When last detected in stopzone
                     "frames_detected": [i * PROCESS_EVERY_N for i in track_data["frame_indices"]],
                     "avg_confidence": float(np.mean(track_data["confidences"])) if track_data["confidences"] else 0.0,
                     "wheel_detections": len(track_data["wheel_positions"])
