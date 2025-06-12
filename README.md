@@ -12,6 +12,10 @@ This project's main goal is to document some real traffic numbers using [RoboFlo
 
 Python with FastAPI, located in the `./backend` folder
 
+### Requirements
+
+These instructions assume you have a [RoboFlow inference](https://github.com/roboflow/inference) server running on http://localhost:9001/ (`pip install inference-cli && inference server start`)
+
 ### Setup
 
 ```shell
@@ -70,9 +74,9 @@ https://github.com/user-attachments/assets/10a16304-7aae-4510-8a0c-a586f8f08775
 
 ## Tools & Models
 
-I used RoboFlow's awesome [PolygonZone](https://polygonzone.roboflow.com/) tool to draw my two target zones (stop areas) and trained my own Car + Wheel object detection model through RoboFlow's web interface.
+I used RoboFlow's awesome [PolygonZone](https://polygonzone.roboflow.com/) tool to draw my two target zones (stop areas) and trained my own [Car + Wheel object detection model](https://universe.roboflow.com/trial-5gole/wheel-detection-0mkax) through RoboFlow's web interface.
 
-To perform inference on video footage we call our object detection model through [RoboFlow's Inference SDK]() on individual video frames at a fixed frame rate that balances performance and accuracy.
+To perform inference on video footage we call our object detection model through [RoboFlow's Inference SDK](https://inference.roboflow.com/inference_helpers/inference_sdk/) on individual video frames at a fixed frame rate that balances performance and accuracy.
 
 The frontend is a simple React application and our backend uses FastAPI in conjunction with OpenCV, [roboflow/inference](https://github.com/roboflow/inference), and [roboflow/supervision](https://github.com/roboflow/supervision) (which we use for unique vehicle identification and tracking).
 
