@@ -105,7 +105,7 @@ function App() {
           </div>}
 
           {/* Results */}
-          {predictionResults && predictionResults.vehicles && <div className="mt-20 pt-4 max-w-4xl mx-auto">
+          {predictionResults && predictionResults.vehicles && <div className="mt-12 mb-8 pt-4 max-w-4xl mx-auto">
             <h2 className="border-b font-semibold pb-2 mb-6 text-xs uppercase text-zinc-500 border-zinc-300">Results</h2>
         
             {curRatio !== null && <div className="mb-8">

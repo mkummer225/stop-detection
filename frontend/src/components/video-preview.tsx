@@ -1,4 +1,6 @@
+import { PauseIcon, PlayIcon } from "lucide-react"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { secondsToHms } from "../lib/util"
 
 interface VideoPreviewProps {
     src: string | null
@@ -86,7 +88,7 @@ export default function VideoPreview({ src, isProcessing, detections, handleUplo
             {/* Display the video + the bounding boxes of cars + wheels */}
             {/* TODO: hide video controls (move to custom controls with scrubber) */}
             {src && <>
-                <video ref={videoElmRef} onLoadedMetadata={handleMetadataLoaded} onTimeUpdate={() => setCurTime(videoElmRef.current?.currentTime)} src={src} className="w-full h-auto aspect-[16/9]" controls></video>
+                <video ref={videoElmRef} onLoadedMetadata={handleMetadataLoaded} onTimeUpdate={() => setCurTime(videoElmRef.current?.currentTime)} src={src} className="w-full h-auto aspect-[16/9]" onClick={() => videoElmRef?.current?.paused ? videoElmRef?.current?.play() : videoElmRef?.current?.pause()}></video>
                 {isProcessing && <div className="absolute inset-0 bg-black/70 text-sm flex items-center justify-center text-white">
                     <span className="animate-pulse">Processing...</span>
                 </div> }
@@ -101,7 +103,7 @@ export default function VideoPreview({ src, isProcessing, detections, handleUplo
             }
 
             {/* Status text */}
-            {!src && <div className=" select-none cursor-pointer w-full h-auto aspect-[16/9] flex items-center justify-center text-xs font-semibold" onClick={handleUploadButton}>
+            {!src && <div className=" select-none cursor-pointer w-full h-auto aspect-[16/9] flex items-center justify-center text-xs font-semibold" onClick={(e) => {if(e.target === e.currentTarget) handleUploadButton(e)}}>
                 {isProcessing ? <h2>'Processing with RoboFlow...'</h2> : <div className="text-center">
                     <h2 className="mb-2">No Video</h2>
                     <button className="bg-zinc-100 rounded-lg cursor-pointer select-none px-2.5 py-1" onClick={handleUploadButton}>Upload</button>
@@ -110,20 +112,31 @@ export default function VideoPreview({ src, isProcessing, detections, handleUplo
         </div>
 
         {/* Visualize the results on a timeline */}
-        {/* TODO: add play pause & video controls */}
         {/* TODO: allow dragging / scrubbing */}
-        {src && <div ref={stoppageBlocksRef} className="relative w-full max-w-md bg-zinc-200 rounded-lg h-14 mx-auto mt-8 overflow-hidden"
-            onMouseUp={setPlayHead}>
-            {/* Add blocks to the scrubber showing where drivers stopped (blue) and did not stop (red) */}
-            {stoppageBlocks?.map((detection: StoppageBlock)=>
-                <div className={"absolute top-0 bottom-0 select-none cursor-pointer opacity-40 hover:opacity-80 transition-all rounded-lg" + (detection.didStop ? " border-blue-500 bg-blue-500" : " border-red-500 bg-red-500")}
-                     style={{ left: `${stoppageWidthRatio * detection.startFrame}px`, width: `${Math.max(2, stoppageWidthRatio * (detection.endFrame - detection.startFrame))}px` }}
-                     onClick={() => setCurrentFrame(detection.startFrame)}
-                >
-
+        {src && <>
+            <div className="relative flex gap-4 w-full max-w-md h-14 mx-auto mt-8 mb-4">
+                <div className="text-zinc-300 hover:text-zinc-400 transition-all flex items-center justify-center w-8 overflow-hidden text-xs">
+                    {videoElmRef?.current?.paused ? 
+                        <PlayIcon height={32} width={32} stroke="0" fill={"currentColor"} className="cursor-pointer" onClick={() => videoElmRef?.current?.play()} /> :
+                        <PauseIcon height={32} width={32} stroke="0" fill={"currentColor"} className="cursor-pointer" onClick={() => videoElmRef?.current?.pause()} />}
                 </div>
-            )}
-            <div className="absolute top-0 bottom-0 border-r-black border-r-2" style={{ left: `${stoppageWidthRatio * (curTime*FPS)}px` }}></div>
-        </div>}
+
+                {/* Add blocks to the scrubber showing where drivers stopped (blue) and did not stop (red) */}
+                <div ref={stoppageBlocksRef} className="relative bg-zinc-200 rounded-lg flex-1 overflow-hidden" onMouseUp={setPlayHead}>
+                    {stoppageBlocks?.map((detection: StoppageBlock)=>
+                        <div className={"absolute top-0 bottom-0 select-none cursor-pointer opacity-40 hover:opacity-80 transition-all rounded-lg" + (detection.didStop ? " border-blue-500 bg-blue-500" : " border-red-500 bg-red-500")}
+                            style={{ left: `${stoppageWidthRatio * detection.startFrame}px`, width: `${Math.max(2, stoppageWidthRatio * (detection.endFrame - detection.startFrame))}px` }}
+                            onClick={() => setCurrentFrame(detection.startFrame)}
+                        >
+                        </div>
+                    )}
+                    <div className="absolute top-0 bottom-0 border-r-black border-r-2" style={{ left: `${stoppageWidthRatio * (curTime*FPS)}px` }}></div>
+                </div>
+            </div>
+
+            <div className="text-center text-sm text-zinc-400">
+                {secondsToHms(curTime)}
+            </div>
+        </>}
     </>)
 }
