@@ -160,10 +160,3 @@ This was a really fun exercise – I definitely spent a good majority of the ti
 All in, I'm really happy I undertook this project – long before this assignment I felt compelled to build this exact thing. My partner would regularly extoll to me as people blew through the stop signs – "another one...", "oh, there's another" – in the back of my mind I knew she was right but what could I do about it...
 
 The idea had been percolating to count violators using CV, to validate her, to give her some concrete #s behind it so maybe she would find some peace with it – when I saw the assignment come through I knew there was only 1 project I could work on... un-Happy Camper(s).
-
-## TODO
-
-[ ] Motorcycles aren't being detected
-[ ] Dense sections of video cause issues (tracker?)
-[ ] South stop zone polygon seems to be missing vehicles that are closer to the curb
-[ ] 
