@@ -1,10 +1,8 @@
-# un-Happy Camper(s)
+# Stop Detection using RoboFlow Inference
 
-My partner and I live on a very busy intersection here in Denver, there's a local bar that attracts a lot of out of towners, delivery drivers, fast cars, etc... we see a lot of people in a hurry.
+My partner and I live on a very busy intersection here in Denver, there's a local bar, "Happy Camper," that attracts a lot of out of towners, delivery drivers, fast cars, etc... we see a lot of people in a hurry.
 
 ![Happy Camper brake lights](/assets/happy_camper.jpg)
-
-The bar in question is **[Happy Camper](https://happycamper.pizza/denver/)** – my partner on the other hand... is an un-happy camper... with all the drivers that barrel through our stop signs.
 
 The goal of this project is to use object detection to detect and classify drivers that **stop** and **don't stop** at our stop signs. Ultimately resulting in real traffic numbers that might serve to influence the county to make our intersection safer.
 
@@ -20,8 +18,8 @@ These instructions assume you have a [RoboFlow inference](https://github.com/rob
 
 ```shell
 cd backend
-conda create -n unhappy-campers
-conda activate unhappy-campers
+conda create -n stop-detection
+conda activate stop-detection
 pip install "fastapi[standard]" uvicorn inference_sdk supervision opencv-python
 ```
 
@@ -156,7 +154,3 @@ The model was trained only in daylight conditions over 1 afternoon, while it sho
 ## Retrospect
 
 This was a really fun exercise – I definitely spent a good majority of the time getting to learn RoboFlow's libaries and training + annotation platform. It was really satisfying developing the application the way I did: starting with a model that was okay, setting up a basic endpoint, building the UI, going back to the model, finally adding vehicle id + tracking. It felt like nice solid chunks of progression as I watched the interface take shape while the model and algorithm just got better and better, RoboFlow honestly made the CV side of things really seamless... I'd guess the model training pipeline saved me at least 2 hours of wrangling on my local machine.
-
-All in, I'm really happy I undertook this project – long before this assignment I felt compelled to build this exact thing. My partner would regularly extoll to me as people blew through the stop signs – "another one...", "oh, there's another" – in the back of my mind I knew she was right but what could I do about it...
-
-The idea had been percolating to count violators using CV, to validate her, to give her some concrete #s behind it so maybe she would find some peace with it – when I saw the assignment come through I knew there was only 1 project I could work on... un-Happy Camper(s).
