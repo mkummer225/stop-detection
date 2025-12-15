@@ -4,7 +4,7 @@ My partner and I live on a busy intersection here in Denver – over the years w
 
 ![Happy Camper brake lights](/assets/happy_camper.jpg)
 
-The goal of this project is to use object detection to detect and classify drivers that **stop** and **don't stop** at our stop signs, giving us some concrete numbers behind the number of drivers that might be putting our neighborhood foot traffic at risk.
+The goal of this project is to use object detection and tracking to detect and classify drivers that **stop** and **don't stop** at our stop signs, giving us some concrete numbers behind the number of drivers that might be putting our neighborhood foot traffic at risk.
 
 ## Backend
 
@@ -72,4 +72,6 @@ https://github.com/user-attachments/assets/10a16304-7aae-4510-8a0c-a586f8f08775
 
 ## Final Results
 
-In a 5 minute period, in the middle of the afternoon on a Tuesday, I observed only 20% of vehicles properly stop at stop signs in our intersection
+In a 5 minute period, in the middle of the afternoon on a Tuesday, I observed only 20% of vehicles properly stop at stop signs in our intersection - on a busy Friday night/afternoon we would likely see hundreds of cars through our intersection.
+
+Obviously this is a narrow demonstration, a proper study would need much more data collection, model refinement, etc. Primarily with this project, I wanted to see what was possible with some of the state of the art computer vision and tracking models, to put together a simple user interface for a monitoring dashboard, and to gather some preliminary numbers.
