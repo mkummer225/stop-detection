@@ -1,10 +1,10 @@
 # Stop Detection using RoboFlow Inference
 
-My partner and I live on a very busy intersection here in Denver, there's a local bar called "Happy Camper," that attracts a lot of out of towners, delivery drivers, fast cars, etc.
+My partner and I live on a busy intersection here in Denver – over the years we've observed a lot of people in a hurry (delivery drivers, exotic cars, out-of-towners, etc), being that our corner is right next to a park where small children play as well as a few very popular restaurant/bars we were always concerned with the number of violators.
 
 ![Happy Camper brake lights](/assets/happy_camper.jpg)
 
-The goal of this project is to use object detection to detect and classify drivers that **stop** and **don't stop** at our stop signs.
+The goal of this project is to use object detection to detect and classify drivers that **stop** and **don't stop** at our stop signs, giving us some concrete numbers behind the number of drivers that might be putting our neighborhood foot traffic at risk.
 
 ## Backend
 
